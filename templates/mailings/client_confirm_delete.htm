@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление клиента{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0 text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Удаление клиента
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5>Вы уверены, что хотите удалить клиента?</h5>
+                    <p><strong>Клиент:</strong> {{ object.full_name }} ({{ object.email }})</p>
+                    <p>Это действие нельзя отменить. Все рассылки, в которых участвует этот клиент, будут обновлены.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Да, удалить
+                        </button>
+                        <a href="{% url 'mailings:client_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

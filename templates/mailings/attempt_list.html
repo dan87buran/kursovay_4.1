@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Попытки рассылок{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-clock-history"></i> Попытки рассылок</h1>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Всего попыток</h5>
+                <h2 class="display-4">{{ total_attempts }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Успешных</h5>
+                <h2 class="display-4">{{ success_attempts }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <h5 class="card-title">Неуспешных</h5>
+                <h2 class="display-4">{{ failed_attempts }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if attempts %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Рассылка</th>
+                        <th>Дата и время попытки</th>
+                        <th>Статус</th>
+                        <th>Ответ сервера</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in attempts %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'mailings:mailing_detail' attempt.mailing.pk %}" class="text-decoration-none">
+                                #{{ attempt.mailing.id }}: {{ attempt.mailing.message.subject|truncatechars:30 }}
+                            </a>
+                        </td>
+                        <td>{{ attempt.attempt_time|date:"d.m.Y H:i:s" }}</td>
+                        <td>
+                            {% if attempt.status == 'success' %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Успешно
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Не успешно
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="font-monospace" style="font-size: 0.9em;">
+                                {{ attempt.server_response|truncatechars:100 }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if is_paginated %}
+<nav aria-label="Навигация по страницам" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="alert alert-info">
+    <h4 class="alert-heading">Нет попыток</h4>
+    <p>У вас пока нет зарегистрированных попыток рассылок.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-box-arrow-in-right"></i> Вход в систему
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Войти
+                        </button>
+                        <a href="{% url 'users:register' %}" class="btn btn-link">
+                            Нет аккаунта? Зарегистрируйтесь
+                        </a>
+                    </div>
+                </form>
+                <hr class="my-4">
+                <div class="text-center">
+                    <a href="{% url 'users:password_reset' %}" class="btn btn-link">
+                        Забыли пароль?
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

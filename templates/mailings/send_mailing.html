@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Отправка рассылки{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-send-check"></i> Отправка рассылки
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5>Информация о рассылке</h5>
+                    <ul>
+                        <li><strong>Сообщение:</strong> {{ mailing.message.subject }}</li>
+                        <li><strong>Клиентов:</strong> {{ clients_count }}</li>
+                        <li><strong>Время начала:</strong> {{ mailing.start_time|date:"d.m.Y H:i" }}</li>
+                        <li><strong>Время окончания:</strong> {{ mailing.end_time|date:"d.m.Y H:i" }}</li>
+                        <li><strong>Текущее время:</strong> {% now "d.m.Y H:i" %}</li>
+                    </ul>
+                </div>
+
+                {% if not mailing.is_active %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Эта рассылка отключена и не может быть отправлена.
+                    </div>
+                {% elif not mailing.start_time <= now <= mailing.end_time %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-clock"></i> Текущее время не входит в период отправки этой рассылки.
+                    </div>
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Вы уверены, что хотите отправить эту рассылку? Это действие нельзя отменить.
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-send-check"></i> Да, отправить рассылку
+                            </button>
+                            <a href="{% url 'mailings:mailing_detail' mailing.pk %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Отмена
+                            </a>
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

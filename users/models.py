@@ -3,13 +3,12 @@ from django.db import models
 
 
 class User(AbstractUser):
+    # Измените это поле:
     email = models.EmailField(
         verbose_name='Email',
         unique=True,
-        error_messages={
-            'unique': 'Пользователь с таким email уже существует.',
-        },
     )
+
     avatar = models.ImageField(
         upload_to='users/avatars/',
         verbose_name='Аватар',

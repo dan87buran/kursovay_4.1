@@ -61,3 +61,7 @@ class UserProfileForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class UserAdminForm:
+    pass

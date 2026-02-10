@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Список сообщений{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-chat-text"></i> Список сообщений</h1>
+    <a href="{% url 'mailings:message_create' %}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Создать сообщение
+    </a>
+</div>
+
+{% if messages_list %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Тема</th>
+                        <th>Содержание</th>
+                        <th>Владелец</th>
+                        <th>Дата создания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages_list %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'mailings:message_update' message.pk %}" class="text-decoration-none">
+                                {{ message.subject|truncatechars:50 }}
+                            </a>
+                        </td>
+                        <td>{{ message.body|truncatechars:100 }}</td>
+                        <td>
+                            {% if message.owner == request.user %}
+                                <span class="badge bg-primary">Вы</span>
+                            {% else %}
+                                {{ message.owner.email }}
+                            {% endif %}
+                        </td>
+                        <td>{{ message.created_at|date:"d.m.Y H:i" }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{% url 'mailings:message_update' message.pk %}"
+                                   class="btn btn-outline-warning" title="Редактировать">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'mailings:message_delete' message.pk %}"
+                                   class="btn btn-outline-danger" title="Удалить">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if is_paginated %}
+<nav aria-label="Навигация по страницам" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="alert alert-info">
+    <h4 class="alert-heading">Нет сообщений</h4>
+    <p>У вас пока нет созданных сообщений. Создайте первое сообщение!</p>
+    <hr>
+    <a href="{% url 'mailings:message_create' %}" class="btn btn-primary">
+        <i class="bi bi-chat-text"></i> Создать сообщение
+    </a>
+</div>
+{% endif %}
+{% endblock %}

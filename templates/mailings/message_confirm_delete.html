@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление сообщения{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0 text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Удаление сообщения
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5>Вы уверены, что хотите удалить сообщение?</h5>
+                    <p><strong>Тема:</strong> {{ object.subject }}</p>
+                    <p>Это действие нельзя отменить. Все рассылки, связанные с этим сообщением, также будут удалены.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Да, удалить
+                        </button>
+                        <a href="{% url 'mailings:message_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
