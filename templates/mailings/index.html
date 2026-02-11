@@ -1,57 +1,46 @@
 {% extends 'base.html' %}
-{% load cache %}
 
 {% block title %}Главная страница{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <h1 class="mb-4">Добро пожаловать в сервис рассылок!</h1>
+<h1>Добро пожаловать в сервис рассылок!</h1>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Всего рассылок</div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ stats.total_mailings }}</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
-                    <div class="card-header">Активные рассылки</div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ stats.active_mailings }}</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-info mb-3">
-                    <div class="card-header">Уникальные клиенты</div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ stats.unique_clients }}</h5>
-                    </div>
+{% if user.is_authenticated %}
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Рассылки</h5>
+                    <p class="card-text">Управление email-рассылками</p>
+                    <a href="#" class="btn btn-primary">Перейти</a>
                 </div>
             </div>
         </div>
-
-        {% if user.is_authenticated %}
-            <div class="mt-4">
-                <h3>Быстрые действия</h3>
-                <div class="btn-group" role="group">
-                    <a href="{% url 'mailings:mailing_create' %}" class="btn btn-success">Создать рассылку</a>
-                    <a href="{% url 'mailings:client_create' %}" class="btn btn-primary">Добавить клиента</a>
-                    <a href="{% url 'mailings:message_create' %}" class="btn btn-info">Создать сообщение</a>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Клиенты</h5>
+                    <p class="card-text">Управление получателями</p>
+                    <a href="#" class="btn btn-primary">Перейти</a>
                 </div>
             </div>
-        {% else %}
-            <div class="alert alert-info mt-4">
-                <h4>Для работы с сервисом необходима авторизация</h4>
-                <p>Пожалуйста, войдите в систему или зарегистрируйтесь</p>
-                <a href="{% url 'users:login' %}" class="btn btn-primary">Войти</a>
-                <a href="{% url 'users:register' %}" class="btn btn-success">Зарегистрироваться</a>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Сообщения</h5>
+                    <p class="card-text">Шаблоны сообщений</p>
+                    <a href="#" class="btn btn-primary">Перейти</a>
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
-</div>
+{% else %}
+    <div class="alert alert-info mt-4">
+        <h4>Для работы с сервисом необходима авторизация</h4>
+        <p>Пожалуйста, войдите в систему или зарегистрируйтесь</p>
+        <a href="{% url 'users:login' %}" class="btn btn-primary">Войти</a>
+        <a href="{% url 'users:register' %}" class="btn btn-success">Зарегистрироваться</a>
+    </div>
+{% endif %}
 {% endblock %}

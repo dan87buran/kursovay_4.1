@@ -1,12 +1,12 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+import django.contrib.auth.forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
 
-class UserRegisterForm(forms.ModelForm):
+class UserRegisterForm(django.contrib.auth.forms.UserCreationForm):
     password1 = forms.CharField(
         label='Пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
@@ -18,30 +18,24 @@ class UserRegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'phone', 'country']
+        fields = ['email', 'username', 'first_name', 'last_name', 'phone', 'country']
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-    def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Пароли не совпадают")
-        return password2
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError('Пользователь с таким email уже существует')
+        return email
 
 
-class UserLoginForm(AuthenticationForm):
+class UserLoginForm(django.contrib.auth.forms.AuthenticationForm):
     username = forms.CharField(
         label='Email',
         widget=forms.EmailInput(attrs={'class': 'form-control'})
@@ -55,13 +49,11 @@ class UserLoginForm(AuthenticationForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['avatar', 'username', 'phone', 'country']
+        fields = ['avatar', 'username', 'first_name', 'last_name', 'phone', 'country']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
         }
-
-
-class UserAdminForm:
-    pass
