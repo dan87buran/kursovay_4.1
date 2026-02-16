@@ -8,13 +8,13 @@
             <ul class="navbar-nav me-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mailings:mailing_list' %}">Рассылки</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'mailings:client_list' %}">Клиенты</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'mailings:message_list' %}">Сообщения</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'mailings:mailing_list' %}">Рассылки</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'mailings:attempt_list' %}">Попытки</a>
@@ -26,19 +26,20 @@
             </ul>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:profile' %}">
-                            {% if user.avatar %}
-                                <img src="{{ user.avatar.url }}" alt="Avatar" width="30" height="30" class="rounded-circle">
-                            {% endif %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                             {{ user.email }}
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="post" action="{% url 'users:logout' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-link nav-link">Выход</button>
-                        </form>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'users:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Выход</button>
+                                </form>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">

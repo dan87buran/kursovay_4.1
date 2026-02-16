@@ -3,18 +3,15 @@
 {% block title %}Список рассылок{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Список рассылок</h1>
-    <a href="{% url 'mailings:mailing_create' %}" class="btn btn-success">Создать рассылку</a>
-</div>
+<a href="{% url 'mailings:mailing_create' %}" class="btn btn-success mb-3">Создать рассылку</a>
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>ID</th>
             <th>Сообщение</th>
-            <th>Время начала</th>
-            <th>Время окончания</th>
+            <th>Начало</th>
+            <th>Окончание</th>
             <th>Статус</th>
             <th>Действия</th>
         </tr>
@@ -38,7 +35,6 @@
                 {% endif %}
             </td>
             <td>
-                <a href="{% url 'mailings:mailing_detail' mailing.pk %}" class="btn btn-sm btn-info">Просмотр</a>
                 <a href="{% url 'mailings:mailing_update' mailing.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
                 <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-sm btn-danger">Удалить</a>
                 {% if mailing.status == 'started' %}
