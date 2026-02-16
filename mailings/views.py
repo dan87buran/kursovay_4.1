@@ -1,55 +1,43 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
+from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import (
     ListView, DetailView, CreateView,
     UpdateView, DeleteView
 )
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.cache import cache
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.db.models import Q, Count
-from django.core.mail import send_mail
-from django.conf import settings
-from django.utils import timezone
-from .models import Mailing, Client, Message, MailingAttempt
-from .forms import (
-    MailingForm, ClientForm, MessageForm,
-    MailingSendForm
-)
 
+from .models import Mailing, Client, Message, MailingAttempt
+from .forms import MailingForm, ClientForm, MessageForm, MailingSendForm
 
 def index(request):
-    """Главная страница"""
-    cache_key = 'home_page_stats'
-    stats = cache.get(cache_key)
-
-    if not stats:
-        total_mailings = Mailing.objects.count()
-        active_mailings = Mailing.objects.filter(
-            is_active=True,
-            start_time__lte=timezone.now(),
-            end_time__gte=timezone.now()
-        ).count()
-        unique_clients = Client.objects.values('email').distinct().count()
-
-        stats = {
-            'total_mailings': total_mailings,
-            'active_mailings': active_mailings,
-            'unique_clients': unique_clients,
-        }
-        cache.set(cache_key, stats, 300)  # Кешируем на 5 минут
+    total_mailings = Mailing.objects.count()
+    active_mailings = Mailing.objects.filter(
+        start_time__lte=timezone.now(),
+        end_time__gte=timezone.now(),
+        is_active=True
+    ).count()
+    unique_clients = Client.objects.values('email').distinct().count()
 
     context = {
-        'stats': stats,
+        'total_mailings': total_mailings,
+        'active_mailings': active_mailings,
+        'unique_clients': unique_clients,
     }
     return render(request, 'mailings/index.html', context)
 
 
+
 # Базовый класс для проверки владельца
 class OwnerRequiredMixin:
+    def __init__(self):
+        self.request = None
+
     def get_queryset(self):
         qs = super().get_queryset()
         if self.request.user.is_superuser or self.request.user.groups.filter(name='Менеджеры').exists():
@@ -59,6 +47,9 @@ class OwnerRequiredMixin:
     def test_func(self):
         obj = self.get_object()
         return obj.owner == self.request.user or self.request.user.is_superuser
+
+    def get_object(self):
+        pass
 
 
 # CRUD для клиентов

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 
 class Client(models.Model):
     """Модель получателя рассылки"""
+    objects = None
     email = models.EmailField(
         verbose_name='Email',
         unique=True
@@ -73,6 +74,7 @@ class Message(models.Model):
 
 class Mailing(models.Model):
     """Модель рассылки"""
+    objects = None
     STATUS_CHOICES = [
         ('created', 'Создана'),
         ('started', 'Запущена'),
