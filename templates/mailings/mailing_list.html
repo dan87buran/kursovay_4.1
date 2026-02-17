@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Список рассылок{% endblock %}
+{% block title %}Рассылки{% endblock %}
 
 {% block content %}
-<a href="{% url 'mailings:mailing_create' %}" class="btn btn-success mb-3">Создать рассылку</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Рассылки</h1>
+    <a href="{% url 'mailings:mailing_create' %}" class="btn btn-success">Создать рассылку</a>
+</div>
 
 <table class="table table-striped">
     <thead>
