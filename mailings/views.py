@@ -175,11 +175,10 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         return redirect('mailings:mailing_detail', pk=mailing.pk)
 
 
-class MailingDetailView(LoginRequiredMixin, OwnerRequiredMixin, DetailView):
+class MailingDetailView(LoginRequiredMixin, DetailView):
     model = Mailing
     template_name = 'mailings/mailing_detail.html'
     context_object_name = 'mailing'
-
 
 class MailingUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = Mailing

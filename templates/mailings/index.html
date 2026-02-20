@@ -5,37 +5,7 @@
 {% block content %}
 <h1>Добро пожаловать в сервис рассылок!</h1>
 
-{% if user.is_authenticated %}
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Рассылки</h5>
-                    <p class="card-text">Управление email-рассылками</p>
-                    <a href="#" class="btn btn-primary">Перейти</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Клиенты</h5>
-                    <p class="card-text">Управление получателями</p>
-                    <a href="#" class="btn btn-primary">Перейти</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Сообщения</h5>
-                    <p class="card-text">Шаблоны сообщений</p>
-                    <a href="#" class="btn btn-primary">Перейти</a>
-                </div>
-            </div>
-        </div>
-    </div>
-<div class="row">
+<div class="row mt-4">
     <div class="col-md-4">
         <div class="card text-white bg-primary mb-3">
             <div class="card-header">Всего рассылок</div>
@@ -61,12 +31,13 @@
         </div>
     </div>
 </div>
-{% else %}
-    <div class="alert alert-info mt-4">
-        <h4>Для работы с сервисом необходима авторизация</h4>
-        <p>Пожалуйста, войдите в систему или зарегистрируйтесь</p>
-        <a href="{% url 'users:login' %}" class="btn btn-primary">Войти</a>
-        <a href="{% url 'users:register' %}" class="btn btn-success">Зарегистрироваться</a>
-    </div>
+
+{% if not user.is_authenticated %}
+<div class="alert alert-info mt-4">
+    <h4>Для работы с сервисом необходима авторизация</h4>
+    <p>Пожалуйста, войдите в систему или зарегистрируйтесь.</p>
+    <a href="{% url 'users:login' %}" class="btn btn-primary">Войти</a>
+    <a href="{% url 'users:register' %}" class="btn btn-success">Зарегистрироваться</a>
+</div>
 {% endif %}
 {% endblock %}
